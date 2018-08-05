@@ -47,9 +47,10 @@
             <div class="clearfix panel-heading ">
 
                 <div class="input-group" style="width: 500px;">
-                    <input type="text" class="form-control" placeholder="请输入要查询的员工">
+                    <!-- param用于获取请求的参数，相当于request.getParameter("keyword")-->
+                    <input id="txtKeyword" type="text" class="form-control" placeholder="请输入要查询的员工" th:value="${param.keyword}">
                     <div class="input-group-btn">
-                        <button class="btn btn-primary"><span class="glyphicon glyphicon-zoom-in"></span>查询</button>
+                        <button class="btn btn-primary" id="btnQuery"><span class="glyphicon glyphicon-zoom-in"></span>查询</button>
                     </div>
                 </div>
             </div>
@@ -97,9 +98,12 @@
 </div>
 <script>
     //绑定点击事件
-    document.getElementById("btnQuery").onclick = function (ev) {
+    document.getElementById("btnQuery").onclick= function(env) {
+
         var url = "/?keyword=" + document.getElementById("txtKeyword").value;
+        // 跳转到url地址
         window.location.href = url;
+
     }
 </script>
 </body>
