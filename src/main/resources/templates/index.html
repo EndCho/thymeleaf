@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!-- 最重要的是要引进thymeleaf的命名空间 -->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <!--th:text="#{app.report.name}-->
+    <title>[[#{app.report.name}]]</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"></link>
+    <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
+    <style type="text/css">
+        .pagination {
+            margin: 0px
+        }
+
+        .pagination > li > a, .pagination > li > span {
+            margin: 0 5px;
+            border: 1px solid #dddddd;
+        }
+
+        .glyphicon {
+            margin-right: 3px;
+        }
+        .highlight {
+            background-color: lightgreen;
+        }
+    </style>
+</head>
+<body>
+<!--调用模板 模板引用表达式 :: 片段id-->
+<div th:insert="header_footer :: header"></div>
+<div class="container">
+    <div class="row">
+        <div>
+            <ol class="breadcrumb" style="background-color:transparent;font-size: 20px">
+                <!-- th:href="#{app.website}相当于动态生成href属性 -->
+                <li><a th:href="#{app.website}">首页</a></li>
+                <li class="active">实战案例</li>
+                <li class="active">thymeleaf模板引擎实战</li>
+            </ol>
+        </div>
+        <!-- th:text代表将内容输出到标签体中  -->
+        <!-- #{app.report.name} #{}代表读取messages.properties相应的属性-->
+        <h1 style="text-align: center" th:text="#{app.report.name}"></h1>
+        <div class="panel panel-default">
+            <div class="clearfix panel-heading ">
+
+                <div class="input-group" style="width: 500px;">
+                    <input type="text" class="form-control" placeholder="请输入要查询的员工">
+                    <div class="input-group-btn">
+                        <button class="btn btn-primary"><span class="glyphicon glyphicon-zoom-in"></span>查询</button>
+                    </div>
+                </div>
+            </div>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>员工编号</th>
+                    <th>姓名</th>
+                    <th>部门</th>
+                    <th>岗位</th>
+                    <th>入职时间</th>
+                    <th>工资</th>
+                    <th>奖金</th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!--大多数的属性都可以支持“三目运算符”，格式 ${布尔表达式}？成立:不成立-->
+                <tr th:each="emp,stat:${emps}" th:class="${emp.job=='MANAGER' || emp.job =='PRESIDENT'?'highlight':''}">
+                    <td>[[${stat.index +1}]]</td>
+                    <td>[[${emp.empno}]]</td>
+                    <td>[[${#strings.toLowerCase(emp.ename)}]]</td>
+                    <!-- th:switch -->
+                    <td th:switch="${emp.dname}">
+                        <span th:case="RESEARCH">研发部</span>
+                        <span th:case="SALES">销售部</span>
+                        <span th:case="ACCOUNTING">会计部</span>
+                        <span th:case="*">*</span>
+                    </td>
+                    <td>[[${emp.job}]]</td>
+                    <td>[[${#dates.format(emp.hiredate,'yyyy年MM月dd日')}]]</td>
+                    <td th:style="${emp.sal > 1500}?'color:red;font-weight:hold;'">[[${#numbers.formatCurrency(emp.sal)}]]</td>
+                    <td th:text="${emp.comm}!=null?${#numbers.formatCurrency(emp.comm)}:'N/A'">[[${emp.comm}]]</td>
+                    <td style="text-align: center">
+                        <button class="btn btn-xs btn-info"></span>详细</button>
+                        <button class="btn btn-xs btn-warning"></span>删除</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    //绑定点击事件
+    document.getElementById("btnQuery").onclick = function (ev) {
+        var url = "/?keyword=" + document.getElementById("txtKeyword").value;
+        window.location.href = url;
+    }
+</script>
+</body>
+</html>
